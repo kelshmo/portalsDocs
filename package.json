@@ -28,6 +28,6 @@
     "escope": "3.3.0",
     "eslint": "^5.9.0"
   },
-  "repository": "github:Sage-Bionetworks/synapseDocs",
+  "repository": "github:kelshmo/portalsDocs",
   "license": "SEE LICENSE IN <README.md>"
 }
