@@ -59,8 +59,7 @@ Read the exported table into R, create a directory to store files and download d
 ```
 exported_table <- read.csv("Job-1342324092830598.csv")
 dir.create("files")
-lapply(exported_table$id, function(x) synGet(x,
-                                             downloadLocation = "./files"))
+lapply(exported_table$id, synGet, downloadLocation = "./files")
 ```
 
 The `exported_table` also includes experimental details relevant to how the data was processed.
