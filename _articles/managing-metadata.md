@@ -22,32 +22,21 @@ Install the `tidyverse` package to perform data frame manipulations.
 ```
 library(tidyverse)
 ```
-We will create a data frame to store the file names in your working directory that contain the phrase "metadata" under the variable *name*. Included in this data frame is the *.csv* file itself read in with `readr::read_csv` under the variable *files* and the metadata file type, parsed from the file name, under the variable *type*.
-```
-files <- tibble::tibble(name = list.files(pattern = "metadata")) %>% 
-  dplyr::mutate(files = purrr::map(name,
-                                   ~ readr::read_csv(., 
-                                                     col_types = readr::cols(.default = "c")))) %>% 
-  dplyr::mutate(type = purrr::map_chr(name, 
-                                     ~stringr::str_split_fixed(., "[_\\.]",5)[2]))
-```
-The `merge()` helper function subsets the metadata files relevant to the analysis type and joins the metadata files. A `right_join` preserves only the individuals and biospecimens that are characterized in each assay type - RNA-seq and SNP array. 
+While reading in each metadata file with `read_csv`, specify the column types as character with "c". Consistent column types ensure common variables can be joined. This code joins data frames using all variables in common across the individual, biospecimen and assay metadata files. A `right_join` preserves only the individuals and biospecimens that are characterized in each assay type - RNA-seq and SNP array. 
 
 ```
-merge <- function(files, assay) {
-  subset <- files[grepl(glue::glue("individual|{assay}|biospecimen"), files$name),]
-  order <- c(which(subset$type == "individual"), 
-             which(subset$type == "biospecimen"),
-             which(subset$type == "assay"))
-  order <- subset[order,]
-  metadata <- order$files %>% 
-    reduce(., dplyr::right_join)
-  metadata
-}
-```
-The result is two data frames named `RNAseq` and `snpArray` that contain all of the relevant metadata for each analysis.
+individual <- read_csv("MC-CAA_individual_human_metadata.csv", col_types = cols(.default = "c"))
+biospecimen <- read_csv("MC-CAA_biospecimen_metadata.csv", col_types = cols(.default = "c"))
+rnaseq_assay <- read_csv("MC-CAA_assay_RNAseq_metadata.csv", col_types = cols(.default = "c"))
+snparray_assay <- read_csv("MC-CAA_assay_snpArray_metadata.csv", col_types = cols(.default = "c"))
 
-```
-RNAseq <- merge(files, "RNAseq")
-snpArray <- merge(files, "snpArray")
+RNASeq <- reduce(
+  list(individual, biospecimen, rnaseq_assay),
+  right_join
+)
+
+snpArray <- reduce(
+  list(individual, biospecimen, snparray_assay),
+  right_join
+)
 ```
