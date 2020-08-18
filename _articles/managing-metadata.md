@@ -25,10 +25,18 @@ library(tidyverse)
 While reading in each metadata file with `read_csv`, specify the column types as character with "c". Consistent column types ensure common variables can be joined. This code joins data frames using all variables in common across the individual, biospecimen and assay metadata files. A `right_join` preserves only the individuals and biospecimens that are characterized in each assay type - RNA-seq and SNP array. 
 
 ```
-individual <- read_csv("MC-CAA_individual_human_metadata.csv", col_types = cols(.default = "c"))
-biospecimen <- read_csv("MC-CAA_biospecimen_metadata.csv", col_types = cols(.default = "c"))
-rnaseq_assay <- read_csv("MC-CAA_assay_RNAseq_metadata.csv", col_types = cols(.default = "c"))
-snparray_assay <- read_csv("MC-CAA_assay_snpArray_metadata.csv", col_types = cols(.default = "c"))
+individual <- read_csv("MC-CAA_individual_human_metadata.csv",
+  col_types = cols(.default = "c")
+)
+biospecimen <- read_csv("MC-CAA_biospecimen_metadata.csv",
+  col_types = cols(.default = "c")
+)
+rnaseq_assay <- read_csv("MC-CAA_assay_RNAseq_metadata.csv",
+  col_types = cols(.default = "c")
+)
+snparray_assay <- read_csv("MC-CAA_assay_snpArray_metadata.csv",
+  col_types = cols(.default = "c")
+)
 
 RNASeq <- reduce(
   list(individual, biospecimen, rnaseq_assay),
